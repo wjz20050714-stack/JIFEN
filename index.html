@@ -1238,7 +1238,7 @@ function initSocket() {
 // 5. 确保在页面加载完成后调用初始化
 window.onload = () => {
     initSocket();
-};
+
             // 房间事件
             socket.on('room_created', (data) => {
                 console.log('房间创建成功:', data);
