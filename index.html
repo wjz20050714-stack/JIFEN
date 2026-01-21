@@ -1207,18 +1207,17 @@
         });
         
         // 初始化Socket连接
-        function initSocket() {
-            // 使用当前域名，或者指定您的服务器地址
-            const serverUrl = window.location.hostname === 'localhost' 
-                ? 'http://localhost:3000' 
-                : window.location.origin;
-            
-            socket = io(serverUrl, {
-                transports: ['websocket', 'polling'],
-                reconnection: true,
-                reconnectionAttempts: 5,
-                reconnectionDelay: 1000
-            });
+       function initSocket() {
+    // 直接强制连接到你的 Zeabur 域名
+    const serverUrl = 'https://jifenqi.zeabur.app';
+
+    socket = io(serverUrl, {
+        transports: ['polling', 'websocket'], // 优先使用轮询确保连接成功
+        reconnection: true,
+        reconnectionAttempts: 10,
+        reconnectionDelay: 2000
+    });
+}
             
             // 连接事件
             socket.on('connect', () => {
