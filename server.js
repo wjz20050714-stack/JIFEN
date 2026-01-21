@@ -565,15 +565,22 @@ io.on('connection', (socket) => {
   });
 });
 
+// 静态文件托管：让服务器能找到同文件夹下的 index.html
+app.use(express.static('.'));
+
+// 根路径路由：当用户打开网页时，直接显示计分器主页
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/index.html');
+});
+
 // 健康检查端点
 app.get('/health', (req, res) => {
-  res.json({ 
-    status: 'ok', 
+  res.json({
+    status: 'ok',
     rooms: rooms.size,
     players: players.size
   });
 });
-
 // 房间信息端点
 app.get('/rooms', (req, res) => {
   const roomList = Array.from(rooms.entries()).map(([id, room]) => ({
