@@ -1205,39 +1205,40 @@
                 if (e.key === 'Enter') joinRoom();
             });
         });
-        // Global variable declaration
+      // 1. 声明全局变量（全文件只准有这一处 let socket）
 let socket; 
 
 function initSocket() {
-    // Backend endpoint on Zeabur
+    // 2. 指向你的 Zeabur 后端地址
     const serverUrl = 'https://wjz.zeabur.app';
     
-    // Initialize connection using the global variable
+    // 3. 初始化连接，强制先使用轮询以避开 Zeabur 的 WebSocket 502 限制
     socket = io(serverUrl, {
         transports: ['polling', 'websocket'],
         reconnection: true,
-        reconnectionAttempts: 10,
-        reconnectionDelay: 2000
+        reconnectionAttempts: 5
     });
 
-    // Connection events
+    // 4. 【关键】把所有 .on 的监听器全都搬进这个函数里！
+    // 这样能彻底解决截图中的 "Cannot read properties of undefined (reading 'on')" 报错
     socket.on('connect', () => {
         console.log('Successfully connected to server');
-        updateConnectionStatus(true);
+        // 只有连接成功后，才允许执行相关逻辑
+        if (typeof updateConnectionStatus === 'function') {
+            updateConnectionStatus(true);
+        }
+    });
+
+    // 如果你代码后面还有 socket.on('roomCreated'...) 等，也要挪到这里面来
+    socket.on('error', (err) => {
+        console.error('Socket connection error:', err);
     });
 }
-            
-            
-            socket.on('disconnect', () => {
-                console.log('与服务器断开连接');
-                updateConnectionStatus(false);
-            });
-            
-            socket.on('connect_error', (error) => {
-                console.error('连接错误:', error);
-                showMessage('连接服务器失败，请刷新重试');
-            });
-            
+
+// 5. 确保在页面加载完成后调用初始化
+window.onload = () => {
+    initSocket();
+};
             // 房间事件
             socket.on('room_created', (data) => {
                 console.log('房间创建成功:', data);
