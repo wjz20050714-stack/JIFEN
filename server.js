@@ -592,7 +592,8 @@ app.get('/rooms', (req, res) => {
   
   res.json({ rooms: roomList });
 });
-const PORT = process.env.PORT || 3000;
-server.listen(PORT, "0.0.0.0", () => {
-  console.log("Server is running on port " + 3000);
+595: const PORT = process.env.PORT || 8080;  // 将默认值从 3000 改为 8080
+596: server.listen(PORT, "0.0.0.0", () => {
+597:     console.log("Server is running on port " + PORT); // 使用变量 PORT，不要写死 3000
+598: });
 });
