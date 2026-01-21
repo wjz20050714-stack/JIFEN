@@ -1205,24 +1205,27 @@
                 if (e.key === 'Enter') joinRoom();
             });
         });
-        
-        // 初始化Socket连接
-       function initSocket() {
-    // 直接强制连接到你的 Zeabur 域名
-    const serverUrl = 'https://wjz.zeabur.app';
+        // Global variable declaration
+let socket; 
 
+function initSocket() {
+    // Backend endpoint on Zeabur
+    const serverUrl = 'https://wjz.zeabur.app';
+    
+    // Initialize connection using the global variable
     socket = io(serverUrl, {
-        transports: ['polling', 'websocket'], // 优先使用轮询确保连接成功
+        transports: ['polling', 'websocket'],
         reconnection: true,
         reconnectionAttempts: 10,
         reconnectionDelay: 2000
     });
+
+    // Connection events
+    socket.on('connect', () => {
+        console.log('Successfully connected to server');
+        updateConnectionStatus(true);
+    });
 }
-            
-            // 连接事件
-            socket.on('connect', () => {
-                console.log('已连接到服务器');
-                updateConnectionStatus(true);
             });
             
             socket.on('disconnect', () => {
